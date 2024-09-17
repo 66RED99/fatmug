@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Video{% endblock title %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Upload a New Video</h5>
+        <form action='{% url "upload" %}' method='post' enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.as_p }}
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

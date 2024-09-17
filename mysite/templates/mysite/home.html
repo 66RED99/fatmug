@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-12">
+    <h2>Available Videos</h2>
+    <ul class="list-group">
+      {% for video in videos %}
+        <li class="list-group-item">
+          <a href="{% url 'video' video.id %}">{{ video.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ video.title }}{% endblock title %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-8">
+    <!-- Display the video with subtitles -->
+    <h2>{{ video.title }}</h2>
+    <video id="videoPlayer" class="w-100" height="360" controls preload="auto">
+        <source src="{{ video.file.url }}" type="video/mp4">
+        <source src="{{ video.file.url }}" type="video/webm">
+        {% for subtitle in subtitles %}
+            <track src="{{ subtitle.file.url }}" kind="subtitles" srclang="{{ subtitle.language }}" label="{{ subtitle.language }}">
+        {% endfor %}
+        Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="col-md-4">
+    <!-- Search Form -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Search Subtitles</h5>
+        <form action="{% url 'search' %}" method="GET">
+          <div class="mb-3">
+            <input type="text" class="form-control" name="q" placeholder="Enter search term..." required>
+            <input type="hidden" name="video_id" value="{{ video.id }}">
+          </div>
+          <div class="mb-3">
+            <select name="language" class="form-select">
+              <option value="">All Languages</option>
+              {% for subtitle in subtitles %}
+                <option value="{{ subtitle.language }}">{{ subtitle.language }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Search</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Display Search Results -->
+    <div id="searchResults" class="mt-3">
+      {% if subtitle_texts %}
+        <h5>Search Results</h5>
+        <ul class="list-group">
+          {% for subtitle_text in subtitle_texts %}
+            <li class="list-group-item">
+              <p>{{ subtitle_text.text }}</p>
+              <a href="#" onclick="jumpToTime('{{ subtitle_text.start_time.total_seconds }}')">Jump to {{ subtitle_text.start_time }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to handle jumping to the timestamp -->
+<script>
+  function jumpToTime(seconds) {
+    var video = document.getElementById('videoPlayer');
+    video.currentTime = seconds;
+    video.play();
+  }
+</script>
+{% endblock body %}
